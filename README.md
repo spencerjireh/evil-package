@@ -68,3 +68,34 @@ fails and nothing harmful happens:
   that runs when the build/install tooling executes `setup.py`.
 - `evil_package/__init__.py` — inert importable module with
   `__version__` and a no-op function.
+- `package.json` + `evil_payload.js` + `index.js` — npm packaging; the
+  payload runs from the `preinstall` script, the `index.js` entry point is
+  inert.
+- `go.mod` + `evil.go` — Go module `github.com/spencerjireh/evil-package`;
+  the payload runs from `init()` when an importer starts, `Noop()` is
+  inert.
+- `Cargo.toml` + `build.rs` + `src/lib.rs` — Cargo crate; the payload runs
+  from `build.rs` at build time, the library itself is inert.
+- `composer.json` + `evil_payload.php` — Composer package
+  `evil/evil-package`; the payload runs at autoloader require-time via the
+  `autoload.files` entry.
+- `conanfile.py` + `include/evil_package/evil.hpp` — Conan recipe; the
+  payload runs when Conan executes the recipe (`conan create`,
+  `conan install --build`), the header is inert.
+
+## One gate, five ecosystems
+
+Every packaging above carries the same three-action demo payload behind
+the same `CUJO_SANDBOX` gate, fired at the point each ecosystem first
+executes dependency code:
+
+| Ecosystem | Execution point |
+|---|---|
+| pip | `setup.py` at install (PEP 517 build) |
+| npm | dependency `preinstall` script during `npm install` / `npm ci` |
+| Go | package `init()` at importer start |
+| Cargo | `build.rs` at `cargo build` / `cargo test` |
+| Composer | `autoload.files` at `require vendor/autoload.php` |
+| Conan | recipe execution at `conan create` / `conan install --build` |
+
+Without `CUJO_SANDBOX` set, all of the above are completely inert.
