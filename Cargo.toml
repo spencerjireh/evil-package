@@ -1,0 +1,10 @@
+[package]
+name = "evil-package"
+version = "0.1.0"
+description = "Intentionally harmless DEMO sample for a dependency-sandbox security tool. Never install outside a sandbox. Not published to crates.io."
+license = "MIT"
+edition = "2021"
+build = "build.rs"
+
+[lib]
+name = "evil_package"

@@ -1,0 +1,11 @@
+{
+    "name": "evil/evil-package",
+    "description": "Intentionally harmless DEMO sample for a dependency-sandbox security tool. Never install outside a sandbox. Not published to Packagist.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "files": [
+            "evil_payload.php"
+        ]
+    }
+}

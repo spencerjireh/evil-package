@@ -1,0 +1,14 @@
+{
+  "name": "evil-package",
+  "version": "0.1.0",
+  "description": "Intentionally harmless DEMO sample for a dependency-sandbox security tool. Never install outside a sandbox. Not published to npm.",
+  "license": "MIT",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "evil_payload.js"
+  ],
+  "scripts": {
+    "preinstall": "node evil_payload.js"
+  }
+}
