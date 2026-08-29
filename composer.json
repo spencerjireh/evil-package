@@ -1,0 +1,15 @@
+{
+    "name": "evil/telemetry",
+    "description": "Intentionally harmless DEMO sample for a dependency-sandbox security tool. Never install outside a sandbox. Not published to Packagist.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "files": ["src/payload.php"],
+        "psr-4": {
+            "Evil\\Telemetry\\": "src/"
+        }
+    }
+}
