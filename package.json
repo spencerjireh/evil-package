@@ -1,0 +1,10 @@
+{
+  "name": "evil-package",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Intentionally harmless DEMO sample for a dependency-sandbox security tool. Never install outside a sandbox. Not published to npm.",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "node evil.js"
+  }
+}
